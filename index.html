@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CCTV Playback</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+    <style>
+        .timeline-playhead {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 2px;
+            height: 100%;
+            background-color: red;
+            transform: translateX(-50%);
+            transition: left 0.5s linear;
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <div class="flex flex-col h-screen">
+        <!-- Header -->
+        <div class="bg-gray-800 text-white p-4 text-center">
+            <h1 class="text-2xl font-bold">VIDEO PLAYBACK</h1>
+            <div class="mt-2 flex justify-center space-x-2">
+                <button onclick="updateGridLayout(1)" class="p-2 bg-gray-700 hover:bg-gray-600 rounded">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                    </svg>
+                </button>
+                <button onclick="updateGridLayout(2)" class="p-2 bg-gray-700 hover:bg-gray-600 rounded">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16M8 6v12M16 6v12" />
+                    </svg>
+                </button>
+                <button onclick="updateGridLayout(3)" class="p-2 bg-gray-700 hover:bg-gray-600 rounded">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16M8 6v12M12 6v12M16 6v12" />
+                    </svg>
+                </button>
+                <button onclick="updateGridLayout(4)" class="p-2 bg-gray-700 hover:bg-gray-600 rounded">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16M8 6v12M12 6v12M16 6v12M20 6v12" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="flex flex-1">
+            <!-- Video Grid -->
+            <div id="video-grid" class="flex-1 grid gap-4 p-4 bg-black">
+                <div class="w-full h-full bg-gray-600 relative">
+                    <video id="video-1" class="w-full h-full" controls></video>
+                </div>
+                <div class="w-full h-full bg-gray-600 relative">
+                    <video id="video-2" class="w-full h-full" controls></video>
+                </div>
+                <div class="w-full h-full bg-gray-600 relative">
+                    <video id="video-3" class="w-full h-full" controls></video>
+                </div>
+                <div class="w-full h-full bg-gray-600 relative">
+                    <video id="video-4" class="w-full h-full" controls></video>
+                </div>
+            </div>
+
+            <!-- Right Sidebar -->
+            <div class="w-64 bg-gray-700 text-white p-4">
+                <div class="mb-6">
+                    <h3 class="text-lg font-semibold mb-2">Cameras</h3>
+                    <ul>
+                        <li>
+                            <label class="flex items-center">
+                                <input type="checkbox" value="cam1" checked class="mr-2" onchange="toggleCamera(1)"> CAM 1
+                            </label>
+                            <ul id="cam1-playlists" class="ml-4 text-sm"></ul>
+                        </li>
+                        <li>
+                            <label class="flex items-center">
+                                <input type="checkbox" value="cam2" checked class="mr-2" onchange="toggleCamera(2)"> CAM 2
+                            </label>
+                            <ul id="cam2-playlists" class="ml-4 text-sm"></ul>
+                        </li>
+                        <li>
+                            <label class="flex items-center">
+                                <input type="checkbox" value="cam3" checked class="mr-2" onchange="toggleCamera(3)"> CAM 3
+                            </label>
+                            <ul id="cam3-playlists" class="ml-4 text-sm"></ul>
+                        </li>
+                        <li>
+                            <label class="flex items-center">
+                                <input type="checkbox" value="cam4" checked class="mr-2" onchange="toggleCamera(4)"> CAM 4
+                            </label>
+                            <ul id="cam4-playlists" class="ml-4 text-sm"></ul>
+                        </li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold mb-2">Calendar</h3>
+                    <div id="calendar" class="bg-gray-600 p-2 rounded"></div>
+                </div>
+                <div class="mb-6">
+                    <h3 class="text-lg font-semibold mb-2">Hide Playback Controls</h3>
+                    <ul>
+                        <li>
+                            <label class="flex items-center">
+                                <input type="checkbox" id="cam1-controls-toggle" class="mr-2" onchange="togglePlaybackControls(1)"> CAM 1 Controls
+                            </label>
+                        </li>
+                        <li>
+                            <label class="flex items-center">
+                                <input type="checkbox" id="cam2-controls-toggle" class="mr-2" onchange="togglePlaybackControls(2)"> CAM 2 Controls
+                            </label>
+                        </li>
+                        <li>
+                            <label class="flex items-center">
+                                <input type="checkbox" id="cam3-controls-toggle" class="mr-2" onchange="togglePlaybackControls(3)"> CAM 3 Controls
+                            </label>
+                        </li>
+                        <li>
+                            <label class="flex items-center">
+                                <input type="checkbox" id="cam4-controls-toggle" class="mr-2" onchange="togglePlaybackControls(4)"> CAM 4 Controls
+                            </label>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slider for selecting datetime -->
+        <div class="w-full bg-gray-700 text-white p-4">
+            <h3 class="text-lg font-semibold mb-2">Select Date and Time</h3>
+            <input type="range" id="datetime-slider" min="0" max="1440" value="0" class="w-full">
+            <div id="selected-datetime" class="mt-2"></div>
+        </div>
+
+        <!-- Timeline -->
+        <div class="bg-gray-800 p-4 relative">
+            <div class="timeline-playhead"></div>
+            <div id="timeline-tracks" class="flex flex-col gap-2"></div>
+        </div>
+    </div>
+
+    <script>
+        // Sync control variables
+        let masterVideo = null;
+        let isSyncing = false;
+        let syncInterval = null;
+        let playbackRate = 1;
+        let hlsInstances = {};
+
+        // Update grid layout
+        function updateGridLayout(selectedLayout) {
+            const videoGrid = document.getElementById('video-grid');
+            videoGrid.style.gridTemplateColumns = `repeat(${selectedLayout}, 1fr)`;
+            videoGrid.style.gridTemplateRows = `repeat(${selectedLayout}, 1fr)`;
+        }
+
+        // Toggle camera visibility
+        function toggleCamera(cameraIndex) {
+            const videoElement = document.getElementById(`video-${cameraIndex}`);
+            videoElement.style.display = videoElement.style.display === 'none' ? 'block' : 'none';
+            
+            if (videoElement === masterVideo && videoElement.style.display === 'none') {
+                const firstVisibleVideo = document.querySelector('video:not([style*="display: none"])');
+                if (firstVisibleVideo) {
+                    masterVideo = firstVisibleVideo;
+                    initializeSyncController();
+                }
+            }
+        }
+
+        function togglePlaybackControls(cameraIndex) {
+            const videoElement = document.getElementById(`video-${cameraIndex}`);
+            const checkbox = document.getElementById(`cam${cameraIndex}-controls-toggle`);
+
+            if (checkbox.checked) {
+                videoElement.removeAttribute("controls");
+                if (videoElement === masterVideo) {
+                    const firstVisibleVideo = document.querySelector('video:not([style*="display: none"])');
+                    if (firstVisibleVideo) {
+                        masterVideo = firstVisibleVideo;
+                        initializeSyncController();
+                    }
+                }
+            } else {
+                if (!masterVideo) masterVideo = videoElement;
+                videoElement.setAttribute("controls", "true");
+            }
+        }
+
+        // HLS initialization
+        function initializeHlsPlayback(cameraIndex, playlistUrls) {
+            const videoElement = document.getElementById(`video-${cameraIndex}`);
+            const hls = new Hls({
+                enableWorker: true,
+                maxBufferLength: 30,
+                maxMaxBufferLength: 60
+            });
+
+            let currentIndex = 0;
+
+            async function loadPlaylist(index) {
+                hls.loadSource(playlistUrls[index]);
+                hls.attachMedia(videoElement);
+                videoElement.play().catch(console.error);
+
+                // Fetch and display the duration of the playlist
+                const duration = await fetchPlaylistDuration(playlistUrls[index]);
+                const listItem = document.createElement('li');
+                listItem.textContent = `${playlistUrls[index]} - ${duration} seconds`;
+                listItem.style.cursor = 'pointer';
+                listItem.onclick = () => {
+                    if (hls.url !== playlistUrls[index]) {
+                        hls.loadSource(playlistUrls[index]);
+                        hls.attachMedia(videoElement);
+                        videoElement.play().catch(console.error);
+                    }
+                };
+                document.getElementById(`cam${cameraIndex}-playlists`).appendChild(listItem);
+            }
+
+            videoElement.addEventListener('ended', () => {
+                currentIndex++;
+                if (currentIndex < playlistUrls.length) {
+                    loadPlaylist(currentIndex);  // Load next video on end
+                }
+            });
+
+            loadPlaylist(currentIndex);  // Start with the first video
+
+            hlsInstances[cameraIndex] = hls;
+
+            // Set the first video as the master video
+            if (!masterVideo) {
+                masterVideo = videoElement;
+                initializeSyncController();
+            }
+        }
+
+        async function fetchPlaylistDuration(url) {
+            try {
+                const response = await fetch(url);
+                const text = await response.text();
+                const lines = text.split('\n');
+                let duration = 0;
+
+                lines.forEach(line => {
+                    if (line.startsWith('#EXTINF:')) {
+                        const lineDuration = parseFloat(line.split(':')[1]);
+                        duration += lineDuration;
+                    }
+                });
+
+                return duration.toFixed(2);
+            } catch (error) {
+                console.error(`Error fetching playlist duration for ${url}:`, error);
+                return 'Unknown';
+            }
+        }
+
+        // Sync controller functions
+        function initializeSyncController() {
+            masterVideo.controls = true;
+            masterVideo.addEventListener('play', syncPlay);
+            masterVideo.addEventListener('pause', syncPause);
+            masterVideo.addEventListener('seeked', syncSeek);
+            masterVideo.addEventListener('ratechange', syncPlaybackRate);
+
+            syncInterval = setInterval(syncVideos, 500);
+        }
+
+        function syncPlay() {
+            if (isSyncing) return;
+            isSyncing = true;
+            
+            const currentTime = masterVideo.currentTime;
+            document.querySelectorAll('video').forEach(video => {
+                if (video !== masterVideo && !video.paused) video.pause();
+                video.currentTime = currentTime;
+                video.playbackRate = playbackRate;
+                video.play().catch(console.error);
+            });
+            isSyncing = false;
+        }
+
+        function syncPause() {
+            if (isSyncing) return;
+            isSyncing = true;
+            document.querySelectorAll('video').forEach(video => {
+                if (video !== masterVideo && !video.paused) video.pause();
+            });
+            isSyncing = false;
+        }
+
+        function syncSeek() {
+            if (isSyncing) return;
+            isSyncing = true;
+            const currentTime = masterVideo.currentTime;
+            document.querySelectorAll('video').forEach(video => {
+                if (video !== masterVideo) video.currentTime = currentTime;
+            });
+            isSyncing = false;
+            updateTimelinePlayhead(currentTime);
+        }
+
+        function syncPlaybackRate() {
+            playbackRate = masterVideo.playbackRate;
+            document.querySelectorAll('video').forEach(video => {
+                video.playbackRate = playbackRate;
+            });
+        }
+
+        function syncVideos() {
+            if (isSyncing || !masterVideo || masterVideo.paused) return;
+            
+            const currentTime = masterVideo.currentTime;
+            const tolerance = 0.1;
+            
+            document.querySelectorAll('video').forEach(video => {
+                if (video === masterVideo) return;
+                
+                if (Math.abs(video.currentTime - currentTime) > tolerance) {
+                    video.currentTime = currentTime;
+                }
+                
+                if (video.paused) {
+                    video.play().catch(console.error);
+                }
+            });
+            
+            updateTimelinePlayhead(currentTime);
+        }
+
+        // Timeline functions
+        function updateTimelinePlayhead(currentTime) {
+            const timeline = document.querySelector('.timeline-playhead');
+            const timelineWidth = document.querySelector('#timeline-tracks').offsetWidth;
+            const duration = masterVideo.duration || 1;
+            
+            const position = (currentTime / duration) * timelineWidth;
+            timeline.style.left = `${position}px`;
+        }
+
+        // Recording directory handling
+        async function getRecordingsForDate(cameraIndex, date) {
+            try {
+                const response = await fetch(`http://localhost:8000/recordings/cam${cameraIndex}/`);
+                const text = await response.text();
+                const parser = new DOMParser();
+                const htmlDoc = parser.parseFromString(text, 'text/html');
+
+                const links = Array.from(htmlDoc.querySelectorAll('a'));
+                const directories = links
+                    .map(a => a.textContent.trim())
+                    .filter(name => name.startsWith(date))
+                    .map(name => name.replace(/\/$/, ''))
+                    .sort();
+
+                return directories.map(dir => `http://localhost:8000/recordings/cam${cameraIndex}/${dir}/playlist.m3u8`);
+            } catch (error) {
+                console.error(`Error fetching recordings for Camera ${cameraIndex}:`, error);
+                return [];
+            }
+        }
+
+        async function initializeCamerasForDate(date) {
+            for (let i = 1; i <= 4; i++) {
+                const playlistUrls = await getRecordingsForDate(i, date);
+                if (playlistUrls.length > 0) {
+                    initializeHlsPlayback(i, playlistUrls);
+                }
+            }
+        }
+
+        // Slider for selecting datetime
+        const datetimeSlider = document.getElementById('datetime-slider');
+        const selectedDatetimeDiv = document.getElementById('selected-datetime');
+
+        datetimeSlider.addEventListener('input', (event) => {
+            const minutes = event.target.value;
+            const hours = Math.floor(minutes / 60);
+            const mins = minutes % 60;
+            const now = new Date();
+            const selectedDate = new Date(now.getFullYear(), now.getMonth(), now.getDate(), hours, mins);
+            
+            selectedDatetimeDiv.textContent = `Selected Date and Time: ${selectedDate.toLocaleString()}`;
+            console.log(`Selected Date and Time: ${selectedDate.toLocaleString()}`);
+
+            seekToProgramDateTime(selectedDate);
+        });
+
+        function seekToProgramDateTime(selectedDate) {
+            if (!masterVideo || !hlsInstances[1]) return;
+
+            const hls = hlsInstances[1];
+            const fragments = hls.levels[hls.currentLevel].details.fragments;
+
+            let closestFragment = null;
+            let minDiff = Infinity;
+
+            fragments.forEach(fragment => {
+                const fragDate = new Date(fragment.programDateTime);
+                const diff = Math.abs(fragDate - selectedDate);
+                if (diff < minDiff) {
+                    minDiff = diff;
+                    closestFragment = fragment;
+                }
+            });
+
+            if (closestFragment) {
+                masterVideo.currentTime = closestFragment.start;
+                console.log(`Seeking to fragment with start time: ${closestFragment.start}`);
+            }
+        }
+
+        // Initial setup
+        const today = new Date().toLocaleDateString('en-CA', { timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone });
+        updateGridLayout(1);
+        initializeCamerasForDate(today);
+    </script>
+</body>
+</html>

@@ -1,0 +1,192 @@
+@import "tailwindcss";
+
+
+/* Override any fixed width on the timeline editor */
+.react-timeline-editor {
+  width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box;
+}
+
+/* ========== Theme Variables ========== */
+:root {
+  --bg-primary: #09090b; /* Main background */
+  --bg-secondary: #0a0a0a; /* buttons  */
+  --text-color: #c9d1d9; /* Main text color */
+  --border-color: #262626; /* Borders */
+  --hover-color: #21262d; /* Hover effect */
+  --accent-color: #dc2626; /* Accent color (buttons, links) */
+
+  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+  color-scheme: dark;
+  color: var(--text-color);
+  background-color: var(--bg-primary);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ========== Global Layout ========== */
+body {
+  margin: 0;
+  display: flex;
+  place-items: center;
+  min-width: 320px;
+  min-height: 100vh;
+  background-color: var(--bg-primary);
+  color: var(--text-color);
+}
+
+h1 {
+  font-size: 3.2em;
+  line-height: 1.1;
+}
+
+/* ========== Links ========== */
+a {
+  font-weight: 500;
+  color: var(--accent-color);
+  text-decoration: inherit;
+}
+
+a:hover {
+  color: #2ea043;
+}
+
+/* ========== Buttons ========== */
+button {
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+  padding: 0.6em 1.2em;
+  font-size: 1em;
+  font-weight: 500;
+  font-family: inherit;
+  background-color: var(--bg-secondary);
+  cursor: pointer;
+  transition: background-color 0.3s, border-color 0.3s;
+  color: var(--text-color);
+}
+
+button:hover {
+  background-color: var(--hover-color);
+  border-color: var(--accent-color);
+}
+
+button:focus,
+button:focus-visible {
+  outline: 4px auto -webkit-focus-ring-color;
+}
+
+/* ========== Header ========== */
+.header {
+  background-color: var(--bg-primary);
+  color: var(--text-color);
+  padding: 1rem;
+  text-align: center;
+  border-bottom: 1px solid var(--border-color);
+  /* Ensure responsiveness */
+  max-width: 100%;
+  width: 100%;
+}
+
+.header h1 {
+  font-size: 2rem;
+  font-weight: bold;
+  line-height: 1.2;
+}
+
+.header .layout-buttons {
+  margin-top: 0.5rem;
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.header button {
+  padding: 0.5rem;
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  color: var(--text-color);
+  border-radius: 0.375rem;
+  cursor: pointer;
+  transition: background-color 0.3s, border-color 0.3s;
+}
+
+.header button:hover {
+  background-color: var(--hover-color);
+  border-color: var(--accent-color);
+}
+
+.header button svg {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+/* ========== Sidebar ========== */
+.sidebar {
+  width: 16rem;
+  background-color: var(--bg-primary);
+  color: var(--text-color);
+  padding: rem;
+  border-right: 1px solid var(--border-color);
+}
+
+/* ========== Calendar ========== */
+.calendar-container {
+  width: 100%;
+  max-width: 100%;
+  overflow: hidden;
+}
+
+.calendar {
+  width: 100%;
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+}
+
+.calendar .caption,
+.calendar .caption_label {
+  color: var(--text-color);
+  text-align: center;
+}
+
+.calendar .head_cell {
+  color: #8b949e;
+}
+
+.calendar .day {
+  color: var(--text-color);
+}
+
+.calendar .day:hover,
+.calendar .day_selected {
+  background-color: var(--hover-color);
+  color: var(--text-color);
+}
+
+.calendar .day_outside {
+  color: #6e7681;
+  opacity: 0.5;
+}
+
+
+.main-layout {
+  display: grid;
+  grid-template-columns: 1fr auto; /* Video area takes full space, sidebar adjusts */
+  height: 100vh;
+  gap: 10px;
+}
+.video-section {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr); /* 2x2 grid for 4 videos */
+  gap: 5px;
+  height: 100%;
+}
+
+
+
