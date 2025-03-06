@@ -2,10 +2,18 @@ import React, { useState, useEffect, useRef, use } from "react";
 import Hls from "hls.js"; // Import Hls.js
 import Header from "./components/Header";
 import VideoGrid from "./components/VideoGrid";
-import Sidebar from "./components/Sidebar";
+import Sidebar from "./components/Sidebar-right";
 import Slider from "./components/Slider";
 import Timeline from "./components/Timeline";
 import { debounce } from "lodash";
+
+import { Chat } from "./components/chat"
+import { AppSidebar } from "./components/sidebar-left"
+
+import { SidebarInset, SidebarProvider, SidebarTrigger } from "./components/ui/sidebar"
+
+
+
 //last change
 const App: React.FC = () => {
   const [masterVideo, setMasterVideo] = useState<HTMLVideoElement | null>(null);
@@ -16,6 +24,8 @@ const App: React.FC = () => {
   const [today, setToday] = useState<string>("");
   const sliderRef = useRef<HTMLInputElement>(null);
   const masterVideoSet = useRef(false);
+
+
 
   useEffect(() => {
     const todayDate = new Date().toLocaleDateString("en-CA", {
@@ -421,21 +431,48 @@ const App: React.FC = () => {
     }
   };
 
-  return (
+return (
+  <SidebarProvider>
+    <AppSidebar />
     <div className="flex flex-col h-screen w-screen">
       <Header updateGridLayout={updateGridLayout} />
-      <div className="flex flex-1">
-        <VideoGrid />
+
+      {/* Main layout with Sidebar & VideoGrid */}
+      <div className="relative flex flex-1">
+        {/* Left Sidebar */}
+       
+
+        {/* Main Content with SidebarInset */}
+        <SidebarInset>
+          <div className="flex flex-1 flex-col">
+            <Chat />
+            {/* Video Grid Content */}
+            <VideoGrid />
+
+            <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
+              <div className="grid auto-rows-min gap-4 md:grid-cols-3">
+                <div className="aspect-video rounded-xl bg-muted/50" />
+                <div className="aspect-video rounded-xl bg-muted/50" />
+                <div className="aspect-video rounded-xl bg-muted/50" />
+              </div>
+              <div className="min-h-[100vh] flex-1 rounded-xl bg-muted/50 md:min-h-min" />
+            </div>
+          </div>
+        </SidebarInset>
+
+        {/* Right Sidebar */}
         <Sidebar
           toggleCamera={toggleCamera}
           togglePlaybackControls={togglePlaybackControls}
         />
       </div>
-      <button onClick={() => masterVideo?.play()}>Play</button>
-      <Slider ref={sliderRef} onValueChange={debouncedHandleSliderChange} />
-      <Timeline />
+
+     
     </div>
+  </SidebarProvider>
   );
+  
+  
 };
 
 export default App;

@@ -1,14 +1,16 @@
-import React from "react";
 
+import React from "react";
 interface HeaderProps {
   updateGridLayout: (selectedLayout: number) => void;
 }
 
 const Header: React.FC<HeaderProps> = ({ updateGridLayout }) => {
   return (
+    
     <div className="header">
       <h1>VIDEO PLAYBACK</h1>
       <div className="layout-buttons">
+        
         <button
           onClick={() => updateGridLayout(1)}
         >
