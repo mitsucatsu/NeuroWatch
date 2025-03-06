@@ -433,19 +433,18 @@ const App: React.FC = () => {
 
 return (
   <SidebarProvider>
-    <AppSidebar />
     <div className="flex flex-col h-screen w-screen">
       <Header updateGridLayout={updateGridLayout} />
 
       {/* Main layout with Sidebar & VideoGrid */}
       <div className="relative flex flex-1">
         {/* Left Sidebar */}
-       
+        <AppSidebar />
 
         {/* Main Content with SidebarInset */}
         <SidebarInset>
           <div className="flex flex-1 flex-col">
-            <Chat />
+            
             {/* Video Grid Content */}
             <VideoGrid />
 

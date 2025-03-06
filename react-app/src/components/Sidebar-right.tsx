@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Calendar } from "./calendar";
+import { FaCamera, FaCalendarAlt, FaVideo, FaChevronLeft, FaChevronRight } from "react-icons/fa";
 
 interface SidebarProps {
   toggleCamera: (cameraIndex: number) => void;
@@ -7,6 +8,7 @@ interface SidebarProps {
 }
 
 const Sidebar: React.FC<SidebarProps> = ({ toggleCamera, togglePlaybackControls }) => {
+  const [isOpen, setIsOpen] = useState(true);
   const [date, setDate] = useState<Date | undefined>(new Date());
   const [cameraState, setCameraState] = useState<{ [key: number]: boolean }>({
     1: true,
@@ -33,13 +35,23 @@ const Sidebar: React.FC<SidebarProps> = ({ toggleCamera, togglePlaybackControls 
   };
 
   return (
-    <div className="sidebar">
+    <div className={`sidebar-right ${isOpen ? "expanded" : "collapsed"}`}>
+
+      {/* Toggle Button */}
+      <button
+        className="text-white mb-4 p-2 bg-gray-700 rounded hover:bg-gray-600 self-end"
+        onClick={() => setIsOpen(!isOpen)}
+      >
+        {isOpen ? <FaChevronRight /> : <FaChevronLeft />}
+      </button>
+
       {/* Cameras Section */}
       <div className="mb-6">
-        <h3 className="text-lg font-semibold mb-2">Cameras</h3>
+        <h3 className={`text-lg font-semibold mb-2 ${isOpen ? "block" : "hidden"}`}>Cameras</h3>
         <ul>
           {[1, 2, 3, 4].map((i) => (
-            <li key={i}>
+            <li key={i} className="flex items-center mb-2">
+              <FaCamera className="mr-2" />
               <label className="flex items-center">
                 <input
                   type="checkbox"
@@ -48,31 +60,29 @@ const Sidebar: React.FC<SidebarProps> = ({ toggleCamera, togglePlaybackControls 
                   className="mr-2"
                   onChange={() => handleCameraToggle(i)}
                 />
-                CAM {i}
+                <span className={`${isOpen ? "block" : "hidden"}`}>CAM {i}</span>
               </label>
-              <ul id={`cam${i}-playlists`} className="ml-4 text-sm"></ul>
             </li>
           ))}
         </ul>
       </div>
 
       {/* Calendar Section */}
-      <div className="calendar-container">
-        <h2 className="text-white mb-2 text-sm font-medium">Calendar</h2>
-        <Calendar
-          mode="single"
-          selected={date}
-          onSelect={setDate}
-          className="calendar"
-        />
+      <div className="calendar-container mb-6">
+        <h2 className={`text-white mb-2 text-sm font-medium ${isOpen ? "block" : "hidden"}`}>Calendar</h2>
+        <FaCalendarAlt className={`mr-2 ${isOpen ? "hidden" : "block"}`} />
+        {isOpen && (
+          <Calendar mode="single" selected={date} onSelect={setDate} className="calendar" />
+        )}
       </div>
 
       {/* Playback Controls Section */}
       <div className="mb-6">
-        <h3 className="text-lg font-semibold mb-2">Hide Playback Controls</h3>
+        <h3 className={`text-lg font-semibold mb-2 ${isOpen ? "block" : "hidden"}`}>Playback Controls</h3>
         <ul>
           {[1, 2, 3, 4].map((i) => (
-            <li key={i}>
+            <li key={i} className="flex items-center mb-2">
+              <FaVideo className="mr-2" />
               <label className="flex items-center">
                 <input
                   type="checkbox"
@@ -81,7 +91,7 @@ const Sidebar: React.FC<SidebarProps> = ({ toggleCamera, togglePlaybackControls 
                   checked={playbackState[i]}
                   onChange={() => handlePlaybackToggle(i)}
                 />
-                CAM {i} Controls
+                <span className={`${isOpen ? "block" : "hidden"}`}>CAM {i} Controls</span>
               </label>
             </li>
           ))}

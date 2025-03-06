@@ -131,11 +131,40 @@ button:hover {
 }
 
 /* ========== Sidebar Right ========== */
-.sidebar {
-  transition: width 0.3s ease;
+.sidebar-right {
   background-color: var(--background);
-  padding: 1rem;
+  height: 100vh;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  transition: width 0.3s ease-in-out, opacity 0.2s ease-in-out;
 }
+.sidebar-right.expanded {
+  width: 17rem; /* 64px when open */
+  opacity: 1;
+}
+
+.sidebar-right.collapsed {
+  width: 4rem; /* 16px when closed */
+  opacity: 0.8; /* Slight fade effect */
+  overflow: hidden;
+}
+
+/* Button */
+.sidebar-right button {
+  background-color: var(--background);
+  padding: 8px;
+  border-radius: 4px;
+  transition: background 0.3s, transform 0.2s ease-in-out;
+}
+
+.sidebar-right button:hover {
+  background-color: var(--hover-color);
+  border: var(--accent);
+  transform: scale(1.05); /* Slight button hover effect */
+}
+
+
 
 /* ========== Sidebar Left ========== */
 .sidebar-left {
