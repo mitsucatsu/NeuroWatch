@@ -158,8 +158,10 @@ const data = {
   ],
 }
 
+
+
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
-  const [isOpen, setIsOpen] = useState(false)
+  const [isOpen, setIsOpen] = useState(false);
 
   return (
     <div className="flex h-screen">
@@ -174,27 +176,27 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <SidebarHeader>
           <TeamSwitcher teams={data.teams} />
         </SidebarHeader>
-        <SidebarContent className={`${isOpen ? "block" : "hidden"} md:block`}>
-          <NavMain items={data.navMain} />
-          <NavProjects projects={data.projects} />
+        <SidebarContent>
+          <NavMain items={data.navMain} isCollapsed={!isOpen} />
+          <NavProjects projects={data.projects} isCollapsed={!isOpen} />
         </SidebarContent>
-        <SidebarFooter className={`${isOpen ? "block" : "hidden"} md:block`}>
-          <NavUser user={data.user} />
+        <SidebarFooter>
+          <NavUser user={data.user} isCollapsed={!isOpen} />
         </SidebarFooter>
         <SidebarRail
-          className=" cursor-pointer"
+          className="cursor-pointer"
           onClick={() => setIsOpen(!isOpen)}
         />
       </Sidebar>
-
+  
       {/* Main Content */}
       <div
         className={`flex-1 transition-all duration-300 ${
           isOpen ? "ml-64" : "ml-16"
         }`}
       >
+    
       </div>
     </div>
-  )
-}
-
+  );
+}  

@@ -45,8 +45,6 @@
 
 
 /* ========== Global Layout ========== */
-
-
 h1 {
   font-size: 3.2em;
   line-height: 1.1;
@@ -176,3 +174,42 @@ button:hover {
   border: 0px solid var(--border);
 }
 
+
+/* ========== Reziable Handle ========== */
+
+.resize-handle {
+  width: 4px;
+  background-color: (var(--background));
+  cursor: col-resize;
+  transition: background 0.2s;
+}
+
+.resize-handle:hover,
+.resize-handle.active {
+  background-color: (var(--hover-color));
+}
+
+/* Custom scrollbar for chat history */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 4px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: (var(--destructive));
+  border-radius: 10px;
+}
+
+/* ========== Chat ========== */
+.chat-panel {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background-color: var(--background);
+  backdrop-filter: blur(10px);
+
+ 
+}

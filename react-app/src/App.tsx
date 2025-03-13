@@ -6,12 +6,11 @@ import Sidebar from "./components/Sidebar-right";
 import Slider from "./components/Slider";
 import Timeline from "./components/Timeline";
 import { debounce } from "lodash";
-
-import { Chat } from "./components/chat"
 import { AppSidebar } from "./components/sidebar-left"
-
 import { SidebarInset, SidebarProvider, SidebarTrigger } from "./components/ui/sidebar"
 
+import { ResizableHandle } from "./components/ResizeableHandle"
+import { ChatPanel } from "./components/chat/chat-panel"
 
 
 //last change
@@ -24,6 +23,32 @@ const App: React.FC = () => {
   const [today, setToday] = useState<string>("");
   const sliderRef = useRef<HTMLInputElement>(null);
   const masterVideoSet = useRef(false);
+
+  const [chatWidth, setChatWidth] = useState(320); // Default width
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false)
+  const [isChatCollapsed, setIsChatCollapsed] = useState(false)
+  const minChatWidth = 300
+  const maxChatWidth = 800
+  const collapsedChatWidth = 0
+
+  const [displayContent, setDisplayContent] = useState<React.ReactNode>(<VideoGrid />)
+
+  const handleChatResize = (newWidth: number) => {
+    if (isChatCollapsed) return
+    if (newWidth < minChatWidth) newWidth = minChatWidth
+    if (newWidth > maxChatWidth) newWidth = maxChatWidth
+    setChatWidth(newWidth)
+  }
+
+  const toggleChat = () => {
+    setIsChatCollapsed(!isChatCollapsed)
+  }
+
+ // Update the setDisplayContent function to also update the title
+  const updateContent = (content: React.ReactNode, title = "Video Playback") => {
+    setDisplayContent(content)
+    setContentTitle(title)
+  }
 
 
 
@@ -431,47 +456,58 @@ const App: React.FC = () => {
     }
   };
 
-return (
-  <SidebarProvider>
-    <div className="flex flex-col h-screen w-screen">
-      <Header updateGridLayout={updateGridLayout} />
-
-      {/* Main layout with Sidebar & VideoGrid */}
-      <div className="relative flex flex-1">
-        {/* Left Sidebar */}
-        <AppSidebar />
-
-        {/* Main Content with SidebarInset */}
-        <SidebarInset>
-          <div className="flex flex-1 flex-col">
-            
-            {/* Video Grid Content */}
-            <VideoGrid />
-
-            <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
-              <div className="grid auto-rows-min gap-4 md:grid-cols-3">
-                <div className="aspect-video rounded-xl bg-muted/50" />
-                <div className="aspect-video rounded-xl bg-muted/50" />
-                <div className="aspect-video rounded-xl bg-muted/50" />
+  return (
+    <SidebarProvider>
+      <div className="flex flex-col h-screen w-screen">
+        <Header updateGridLayout={updateGridLayout} />
+  
+        {/* Main layout with Sidebar & VideoGrid */}
+        <div className="relative flex flex-1">
+          {/* Left Sidebar with Chat Toggle Button */}
+          <AppSidebar
+           isCollapsed={isSidebarCollapsed}
+           toggleCollapse={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
+           toggleChat={toggleChat}
+           isChatCollapsed={isChatCollapsed}
+         />
+  
+          {/* Chat Panel - Now on the Left Side */}
+          {!isChatCollapsed && (
+            <>
+              <div
+              className="flex-shrink-0 transition-all duration-300 ease-in-out overflow-hidden"
+              style={{ width: isChatCollapsed ? collapsedChatWidth : `${chatWidth}px` }}
+              >
+                <ChatPanel setDisplayContent={updateContent} />
               </div>
-              <div className="min-h-[100vh] flex-1 rounded-xl bg-muted/50 md:min-h-min" />
+              {!isChatCollapsed && <ResizableHandle onResize={handleChatResize} initialWidth={chatWidth} />}   </>
+          )}
+  
+          {/* Main Content with SidebarInset */}
+          <SidebarInset>
+            <div className="flex flex-1 flex-col">
+              {/* Video Grid Content */}
+              <VideoGrid />
+              <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
+                <div className="grid auto-rows-min gap-4 md:grid-cols-3">
+                  <div className="aspect-video rounded-xl bg-muted/50" />
+                  <div className="aspect-video rounded-xl bg-muted/50" />
+                  <div className="aspect-video rounded-xl bg-muted/50" />
+                </div>
+                <div className="min-h-[100vh] flex-1 rounded-xl bg-muted/50 md:min-h-min" />
+              </div>
             </div>
-          </div>
-        </SidebarInset>
-
-        {/* Right Sidebar */}
-        <Sidebar
-          toggleCamera={toggleCamera}
-          togglePlaybackControls={togglePlaybackControls}
-        />
+          </SidebarInset>
+  
+          {/* Right Sidebar */}
+          <Sidebar
+            toggleCamera={toggleCamera}
+            togglePlaybackControls={togglePlaybackControls}
+          />
+        </div>
       </div>
-
-     
-    </div>
-  </SidebarProvider>
+    </SidebarProvider>
   );
-  
-  
 };
 
 export default App;
