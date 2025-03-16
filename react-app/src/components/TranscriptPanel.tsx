@@ -1,12 +1,9 @@
 "use client"
 
-import { useState } from "react"
-import { ChevronDown, ChevronUp, Clock, Download, Copy } from "lucide-react"
+import { Clock, Download, Copy } from "lucide-react"
 import { cn } from "../lib/utils"
 
 export function TranscriptPanel() {
-  const [isCollapsed, setIsCollapsed] = useState(false)
-
   // Sample transcript data
   const segments = [
     {
@@ -68,7 +65,7 @@ export function TranscriptPanel() {
 
   return (
     <div className="transcript-panel">
-      {/* Header with toggle button */}
+      {/* Header */}
       <div className="flex items-center justify-between px-4 py-3 border-b border-neutral-800">
         <h3 className="text-sm font-medium text-neutral-300">Transcript</h3>
         <div className="flex items-center gap-2">
@@ -84,45 +81,31 @@ export function TranscriptPanel() {
           >
             <Download size={16} />
           </button>
-          <button
-            onClick={() => setIsCollapsed(!isCollapsed)}
-            className="p-1.5 rounded-md hover:bg-neutral-800 text-neutral-400 hover:text-neutral-200"
-          >
-            {isCollapsed ? <ChevronDown size={16} /> : <ChevronUp size={16} />}
-          </button>
         </div>
       </div>
 
-      {/* Collapsible content */}
-      <div
-        className={cn(
-          "overflow-hidden transition-all duration-300 ease-in-out",
-          isCollapsed ? "max-h-0" : "max-h-[300px]",
-        )}
-      >
-        {/* Transcript segments */}
-        <div className="overflow-y-auto max-h-[240px] custom-scrollbar">
-          {segments.map((segment, index) => (
-            <div
-              key={segment.id}
-              className={cn(
-                "flex gap-3 px-4 py-3 hover:bg-neutral-800/50 cursor-pointer transition-colors",
-                index === 4 ? "bg-neutral-800 border-l-2 border-blue-500" : "border-l-2 border-transparent",
-              )}
-            >
-              <div className="flex-shrink-0 text-blue-400 font-mono text-xs flex items-center gap-1 pt-0.5">
-                <Clock size={12} />
-                <span>{formatTime(segment.start)}</span>
-              </div>
-              <div className="flex-1">
-                {segment.speaker && (
-                  <div className="text-xs font-semibold text-neutral-400 mb-1">{segment.speaker}</div>
-                )}
-                <p className="text-sm text-neutral-300">{segment.text}</p>
-              </div>
+      {/* Transcript segments */}
+      <div className="overflow-y-auto max-h-[440px] custom-scrollbar">
+        {segments.map((segment, index) => (
+          <div
+            key={segment.id}
+            className={cn(
+              "flex gap-3 px-4 py-3 hover:bg-neutral-800/50 cursor-pointer transition-colors",
+              index === 4
+                ? "bg-neutral-800 border-l-2 border-blue-500 transcript-segment-active"
+                : "border-l-2 border-transparent",
+            )}
+          >
+            <div className="flex-shrink-0 text-blue-400 font-mono text-xs flex items-center gap-1 pt-0.5">
+              <Clock size={12} />
+              <span>{formatTime(segment.start)}</span>
             </div>
-          ))}
-        </div>
+            <div className="flex-1">
+              {segment.speaker && <div className="text-xs font-semibold text-neutral-400 mb-1">{segment.speaker}</div>}
+              <p className="text-sm text-neutral-300">{segment.text}</p>
+            </div>
+          </div>
+        ))}
       </div>
     </div>
   )

@@ -458,7 +458,7 @@ const App: React.FC = () => {
 
   return (
     <SidebarProvider>
-      <div className="flex flex-col h-screen w-screen">
+      <div className="main-content">
         {/* Main layout with Sidebar & VideoGrid */}
         <div className="relative flex flex-1">
           {/* Left Sidebar with Chat Toggle Button */}
@@ -471,16 +471,18 @@ const App: React.FC = () => {
   
           {/* Chat Panel - Now on the Left Side */}
           {!isChatCollapsed && (
-            <>
-              <div
-                className="flex-shrink-0 transition-all duration-300 ease-in-out overflow-hidden"
-                style={{ width: isChatCollapsed ? collapsedChatWidth : `${chatWidth}px` }}
-              >
-                <ChatPanel setDisplayContent={updateContent} />
-              </div>
-              <ResizableHandle onResize={handleChatResize} initialWidth={chatWidth} />
-            </>
-          )}
+          <div className="flex">
+            <div
+              className="flex-shrink-0 transition-all duration-300 ease-in-out overflow-hidden"
+              style={{ width: `${chatWidth}px` }}
+            >
+              <ChatPanel setDisplayContent={updateContent} />
+            </div>
+
+            {/* 🔧 Make Sure Resizable Handle is Visible */}
+            <ResizableHandle onResize={handleChatResize} initialWidth={chatWidth} />
+          </div>
+        )}
   
           {/* Main Content Area (Header + VideoGrid + Right Sidebar) */}
           <div className="flex flex-col flex-1">
@@ -494,9 +496,9 @@ const App: React.FC = () => {
             </div>
   
             {/* Content: VideoGrid + Right Sidebar */}
-            <div className="flex flex-1">
+            <div className="flex flex-1 overflow-hidden">
               {/* Video Grid & Transcript */}
-              <div className="flex flex-1 flex-col">
+              <div className="flex flex-1 flex-col h-full min-h-0 overflow-y-auto video-transcript-container">
                 <VideoGrid />
                 <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
                   <div className="grid auto-rows-min gap-4 md:grid-cols-3">

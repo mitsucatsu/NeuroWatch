@@ -3,7 +3,7 @@ import { TranscriptPanel } from "./TranscriptPanel"; // Import the transcript pa
 
 const VideoGrid: React.FC = () => {
   return (
-    <div className="flex flex-col w-full h-full">
+    <div className="flex flex-col w-full h-full min-h-0">
       {/* Video Grid (Takes up most of the space) */}
       <div
         id="video-grid"
@@ -21,8 +21,9 @@ const VideoGrid: React.FC = () => {
       </div>
 
       {/* Transcript Panel (At the bottom) */}
-    
+      <div className="flex-shrink-0">
       <TranscriptPanel />
+    </div>
     </div>
   );
 };
