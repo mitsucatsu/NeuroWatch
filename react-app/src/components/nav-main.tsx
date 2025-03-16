@@ -1,6 +1,7 @@
 "use client"
 
 import { ChevronRight, MessageSquare, type LucideIcon } from "lucide-react"
+import { useChatStore } from "../lib/store"
 
 import {
   Collapsible,
@@ -20,7 +21,6 @@ import {
 
 export function NavMain({
   items,
-  isCollapsed,
 }: {
   items: {
     title: string
@@ -32,32 +32,41 @@ export function NavMain({
       url: string
     }[]
   }[]
-  isCollapsed: boolean
 }) {
+
+  const toggleChat = useChatStore((state) => state.toggleChat)
+  const isChatOpen = useChatStore((state) => state.isChatOpen)
+  
   return (
-    <SidebarGroup>
-      {/* Hide the label when collapsed */}
-      {!isCollapsed && <SidebarGroupLabel>Platform</SidebarGroupLabel>}
-      <SidebarMenu>
-        {items.map((item) => (
-          <Collapsible
-            key={item.title}
-            asChild
-            defaultOpen={item.isActive}
-            className="group/collapsible"
-          >
-            <SidebarMenuItem>
-              <CollapsibleTrigger asChild>
-                <SidebarMenuButton tooltip={item.title}>
-                  {item.icon && <item.icon />}
-                  {/* Hide the title when collapsed */}
-                  {!isCollapsed && <span>{item.title}</span>}
-                  {!isCollapsed && (
+    <>
+      <SidebarGroup>
+        <SidebarGroupLabel>Chat</SidebarGroupLabel>
+        <SidebarMenu>
+          <SidebarMenuItem>
+            <SidebarMenuButton
+              onClick={toggleChat}
+              className={isChatOpen ? "bg-accent text-accent-foreground" : ""}
+              tooltip="Toggle Chat"
+            >
+              <MessageSquare className="h-4 w-4" />
+              <span>Chat</span>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+        </SidebarMenu>
+      </SidebarGroup>
+      <SidebarGroup>
+        <SidebarGroupLabel>Platform</SidebarGroupLabel>
+        <SidebarMenu>
+          {items.map((item) => (
+            <Collapsible key={item.title} asChild defaultOpen={item.isActive} className="group/collapsible">
+              <SidebarMenuItem>
+                <CollapsibleTrigger asChild>
+                  <SidebarMenuButton tooltip={item.title}>
+                    {item.icon && <item.icon />}
+                    <span>{item.title}</span>
                     <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
-                  )}
-                </SidebarMenuButton>
-              </CollapsibleTrigger>
-              {!isCollapsed && (
+                  </SidebarMenuButton>
+                </CollapsibleTrigger>
                 <CollapsibleContent>
                   <SidebarMenuSub>
                     {item.items?.map((subItem) => (
@@ -71,11 +80,16 @@ export function NavMain({
                     ))}
                   </SidebarMenuSub>
                 </CollapsibleContent>
-              )}
-            </SidebarMenuItem>
-          </Collapsible>
-        ))}
-      </SidebarMenu>
-    </SidebarGroup>
+              </SidebarMenuItem>
+            </Collapsible>
+          ))}
+        </SidebarMenu>
+      </SidebarGroup>
+    </>
   )
 }
+
+function localUseChatStore(arg0: (state: any) => any) {
+  throw new Error("Function not implemented.")
+}
+

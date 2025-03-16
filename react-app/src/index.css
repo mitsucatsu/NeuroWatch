@@ -85,14 +85,20 @@ button:hover {
 
 /* ========== Header ========== */
 .header {
+  position: sticky;
+  top: 0; /* Stick to the top */
+  z-index: 100; /* Ensure it stays above other elements */
   background-color: var(--background);
   color: var(--text-color);
   padding: 1rem;
   text-align: center;
   border-bottom: 1px solid var(--border);
-  /* Ensure responsiveness */
   max-width: 100%;
   width: 100%;
+}
+
+.main-content {
+  padding-top: 80px; /* Adjust this based on header height */
 }
 
 .header h1 {
@@ -207,9 +213,33 @@ button:hover {
 .chat-panel {
   display: flex;
   flex-direction: column;
+  justify-content: flex-end;
   height: 100%;
   background-color: var(--background);
-  backdrop-filter: blur(10px);
+  padding-bottom: 120px;
+  border: var(--background);
+}
 
- 
+.chat-input {
+  display: flex;
+  align-items: center;
+  background: var(--background);
+  padding: 5px;
+  border-top: 1px solid #444;
+  border-left: 1px solid #444;
+}
+
+.message-list {
+  flex: 1;
+  overflow-y: auto;
+  padding: 10px;
+  scrollbar-width: thin;
+  scrollbar-color: #666 #222;
+}
+
+
+/* ========== Transcript ========== */
+.transcript-panel {
+  background-color: var(--background);/* Darker background */
+  border: 1px solid var(--border);/* Slightly lighter border */
 }

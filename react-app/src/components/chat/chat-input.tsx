@@ -33,7 +33,7 @@ export function ChatInput({ input, handleInputChange, handleSubmit, isLoading }:
   }
 
   return (
-    <div className="p-4 border-t bg-background/50 backdrop-blur-sm">
+    <div className="chat-input">
       <form onSubmit={handleSubmit} className="flex flex-col space-y-2 max-w-3xl mx-auto">
         <div
           className={cn(

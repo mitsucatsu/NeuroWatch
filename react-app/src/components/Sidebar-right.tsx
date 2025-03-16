@@ -51,7 +51,7 @@ const Sidebar: React.FC<SidebarProps> = ({ toggleCamera, togglePlaybackControls 
         <ul>
           {[1, 2, 3, 4].map((i) => (
             <li key={i} className="flex items-center mb-2">
-              <FaCamera className="mr-2" />
+              <span className="mr-2"><FaCamera /></span>
               <label className="flex items-center">
                 <input
                   type="checkbox"
@@ -70,7 +70,7 @@ const Sidebar: React.FC<SidebarProps> = ({ toggleCamera, togglePlaybackControls 
       {/* Calendar Section */}
       <div className="calendar-container mb-6">
         <h2 className={`text-white mb-2 text-sm font-medium ${isOpen ? "block" : "hidden"}`}>Calendar</h2>
-        <FaCalendarAlt className={`mr-2 ${isOpen ? "hidden" : "block"}`} />
+        <span className={`mr-2 ${isOpen ? "hidden" : "block"}`}><FaCalendarAlt /></span>
         {isOpen && (
           <Calendar mode="single" selected={date} onSelect={setDate} className="calendar" />
         )}
@@ -82,7 +82,7 @@ const Sidebar: React.FC<SidebarProps> = ({ toggleCamera, togglePlaybackControls 
         <ul>
           {[1, 2, 3, 4].map((i) => (
             <li key={i} className="flex items-center mb-2">
-              <FaVideo className="mr-2" />
+              <span className="mr-2"><FaVideo /></span>
               <label className="flex items-center">
                 <input
                   type="checkbox"

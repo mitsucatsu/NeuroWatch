@@ -22,7 +22,7 @@ export function TranscriptPanel() {
   const [isCollapsed, setIsCollapsed] = useState(false)
 
   return (
-    <div className="bg-neutral-900 border-t border-neutral-800">
+    <div className="transcript-panel">
       {/* Header with toggle button */}
       <div
         className="flex items-center justify-between px-4 py-2 border-b border-neutral-800 cursor-pointer"

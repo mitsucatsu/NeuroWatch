@@ -459,51 +459,62 @@ const App: React.FC = () => {
   return (
     <SidebarProvider>
       <div className="flex flex-col h-screen w-screen">
-        <Header updateGridLayout={updateGridLayout} />
-  
         {/* Main layout with Sidebar & VideoGrid */}
         <div className="relative flex flex-1">
           {/* Left Sidebar with Chat Toggle Button */}
           <AppSidebar
-           isCollapsed={isSidebarCollapsed}
-           toggleCollapse={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
-           toggleChat={toggleChat}
-           isChatCollapsed={isChatCollapsed}
-         />
+            isCollapsed={isSidebarCollapsed}
+            toggleCollapse={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
+            toggleChat={toggleChat}
+            isChatCollapsed={isChatCollapsed}
+          />
   
           {/* Chat Panel - Now on the Left Side */}
           {!isChatCollapsed && (
             <>
               <div
-              className="flex-shrink-0 transition-all duration-300 ease-in-out overflow-hidden"
-              style={{ width: isChatCollapsed ? collapsedChatWidth : `${chatWidth}px` }}
+                className="flex-shrink-0 transition-all duration-300 ease-in-out overflow-hidden"
+                style={{ width: isChatCollapsed ? collapsedChatWidth : `${chatWidth}px` }}
               >
                 <ChatPanel setDisplayContent={updateContent} />
               </div>
-              {!isChatCollapsed && <ResizableHandle onResize={handleChatResize} initialWidth={chatWidth} />}   </>
+              <ResizableHandle onResize={handleChatResize} initialWidth={chatWidth} />
+            </>
           )}
   
-          {/* Main Content with SidebarInset */}
-          <SidebarInset>
-            <div className="flex flex-1 flex-col">
-              {/* Video Grid Content */}
-              <VideoGrid />
-              <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
-                <div className="grid auto-rows-min gap-4 md:grid-cols-3">
-                  <div className="aspect-video rounded-xl bg-muted/50" />
-                  <div className="aspect-video rounded-xl bg-muted/50" />
-                  <div className="aspect-video rounded-xl bg-muted/50" />
-                </div>
-                <div className="min-h-[100vh] flex-1 rounded-xl bg-muted/50 md:min-h-min" />
+          {/* Main Content Area (Header + VideoGrid + Right Sidebar) */}
+          <div className="flex flex-col flex-1">
+            {/* Header - Now aligned only with VideoGrid */}
+            <div className="w-full">
+              <div className="flex-1">
+                <Header updateGridLayout={updateGridLayout} />
               </div>
+              {/* Empty space so sidebar starts below the header */}
+              <div className="w-[300px]" />
             </div>
-          </SidebarInset>
   
-          {/* Right Sidebar */}
-          <Sidebar
-            toggleCamera={toggleCamera}
-            togglePlaybackControls={togglePlaybackControls}
-          />
+            {/* Content: VideoGrid + Right Sidebar */}
+            <div className="flex flex-1">
+              {/* Video Grid & Transcript */}
+              <div className="flex flex-1 flex-col">
+                <VideoGrid />
+                <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
+                  <div className="grid auto-rows-min gap-4 md:grid-cols-3">
+                    <div className="aspect-video rounded-xl bg-muted/50" />
+                    <div className="aspect-video rounded-xl bg-muted/50" />
+                    <div className="aspect-video rounded-xl bg-muted/50" />
+                  </div>
+                  <div className="flex-1 min-h-full rounded-xl bg-muted/50 md:min-h-min" />
+                </div>
+              </div>
+  
+              {/* Right Sidebar beside VideoGrid */}
+              <Sidebar
+                toggleCamera={toggleCamera}
+                togglePlaybackControls={togglePlaybackControls}
+              />
+            </div>
+          </div>
         </div>
       </div>
     </SidebarProvider>

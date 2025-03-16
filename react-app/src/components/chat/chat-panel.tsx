@@ -4,7 +4,7 @@ import type React from "react"
 
 import { useState } from "react"
 import { MessageList } from "../../components/chat/message-list"
-import { ChatInput } from "../../components/chat/Chat-Input"
+import { ChatInput } from "../../components/chat/chat-input"
 import  VideoGrid  from "../../components/VideoGrid"
 
 type Message = {
